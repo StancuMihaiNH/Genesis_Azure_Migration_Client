@@ -1,0 +1,1 @@
+export const DATE_TIME_FORMAT: string = "M/d/yyyy, h:mm:ss a";
