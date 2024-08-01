@@ -13,21 +13,19 @@ type FormValues = {
 const LoginForm = () => {
   const navigate = useRouter();
   const [login, { loading, error }] = useLoginMutation();
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<FormValues>({
+  const { handleSubmit, register, formState: { errors }, } = useForm<FormValues>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
   const submit = async ({ email, password }: FormValues) => {
     try {
       const data = await login({
         variables: { email, password },
       });
+
       localStorage.setItem(
         `${Constants.NEXT_PUBLIC_ACCESS_TOKEN_KEY}`, data.data?.login?.token || "",
       );

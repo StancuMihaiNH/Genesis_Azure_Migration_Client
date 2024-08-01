@@ -1,57 +1,62 @@
-import { loginRequest } from "@/services/msalConfig";
-import { setCurrentAccount } from "@/utils/generalUtils";
-import { SilentRequest } from "@azure/msal-browser";
+import { InteractionRequiredAuthError, SilentRequest } from "@azure/msal-browser";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-import { useEffect } from "react";
-import { setAccessToken } from "./accessToken";
+import { useEffect, useState } from "react";
+import { loginRequest } from "../../services/msalConfig";
+import { setCurrentAccount } from "../../utils/generalUtils";
 
-export const Authentication = (props: any): JSX.Element => {
+interface AuthenticationProps {
+    setAccessToken: (token: string) => void;
+    children: React.ReactNode;
+};
+
+export const Authentication: React.FC<AuthenticationProps> = ({ setAccessToken, children }) => {
     const isAuthenticated = useIsAuthenticated();
     const { instance, accounts } = useMsal();
+    const [isInteractionInProgress, setIsInteractionInProgress] = useState(false);
 
-    const name: string = accounts[0]?.name || '';
-    console.log(accounts)
-    setCurrentAccount(accounts[0]);
+    useEffect(() => {
+        const initializeAuth = async () => {
+            if (accounts.length > 0 && !isInteractionInProgress) {
+                setCurrentAccount(accounts[0]);
 
-    const setResponseToken = (accessToken: string): void => {
-        setAccessToken(accessToken);
-        props.setAccessToken(accessToken);
-    };
+                const request: SilentRequest = {
+                    ...loginRequest,
+                    account: accounts[0]
+                };
 
-    useEffect((): void => {
-        const request: SilentRequest = {
-            ...loginRequest,
-            account: accounts[0]
+                try {
+                    const response = await instance.acquireTokenSilent(request);
+                    setAccessToken(response.accessToken);
+                } catch (error) {
+                    if (error instanceof InteractionRequiredAuthError) {
+                        setIsInteractionInProgress(true);
+                        instance.acquireTokenRedirect(request).catch(err => {
+                            console.error("Redirect failed: ", err);
+                            setIsInteractionInProgress(false);
+                        });
+                    } else {
+                        console.error("Silent token acquisition failed: ", error);
+                    }
+                }
+            } else if (!isAuthenticated && !isInteractionInProgress) {
+                setIsInteractionInProgress(true);
+                instance.loginRedirect(loginRequest).catch(err => {
+                    console.error("Login failed: ", err);
+                    setIsInteractionInProgress(false);
+                });
+            }
         };
 
-        instance.acquireTokenSilent(request)
-            .then((response: any): void => {
-                setResponseToken(response.accessToken);
-            })
-            .catch((errors: any): void => {
-                instance.acquireTokenRedirect(request);
-            });
-    }, [isAuthenticated]);
+        initializeAuth();
+    }, [isAuthenticated, accounts, instance, isInteractionInProgress, setAccessToken]);
 
-    return (
-        <div id="main-user-content">
-            {
-                !isAuthenticated &&
-                <div
-                    id="autentication-content"
-                    style={{
-                        textAlign: "center",
-                        marginTop: "10px"
-                    }}>
-                    <label>Your are currently logged out of your Office 365 account.</label>
-                </div>
-            }
-            {
-                isAuthenticated &&
-                <div id="logged-in-user-content">
-                    {props.children}
-                </div>
-            }
-        </div>
-    );
+    if (!isAuthenticated) {
+        return (
+            <div id="authentication-content" style={{ textAlign: "center", marginTop: "10px" }}>
+                <label>You are currently logged out of your Office 365 account.</label>
+            </div>
+        );
+    }
+
+    return <div id="logged-in-user-content">{children}</div>;
 };

@@ -14,9 +14,7 @@ import {
   useTagsQuery,
   useViewerQuery,
 } from "@/graphql/__generated__/schema";
-import { Constants } from "@/utils/constants";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { RiAddLine, RiCloseLine } from "react-icons/ri";
 const Page = () => {
@@ -27,15 +25,6 @@ const Page = () => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [editTag, setEditTag] = useState<Tag | null>(null);
   const tags = data?.tags || [];
-  const router = useRouter();
-  useEffect(() => {
-    const token = localStorage.getItem(
-      Constants.NEXT_PUBLIC_ACCESS_TOKEN_KEY || "",
-    );
-    if (!token) {
-      router.push("/login");
-    }
-  }, [router]);
 
   return (
     <>
