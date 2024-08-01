@@ -5,7 +5,8 @@ import TopicCard from "@/components/TopicCard";
 import { AppContext } from "@/context";
 import { Topic, TopicsDocument, useDeleteTopicMutation, UserRole, useTopicsQuery, useViewerQuery } from "@/graphql/__generated__/schema";
 import usePinTopic from "@/hooks/usePinTopic";
-import { Constants } from "@/utils/constants";
+import { IPublicClientApplication } from "@azure/msal-browser";
+import { useMsal } from "@azure/msal-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import classNames from "classnames";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -25,6 +26,8 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
   const { pin, unpin } = usePinTopic();
   const { data: viewer, client } = useViewerQuery();
   const { data: topicsData, previousData, loading } = useTopicsQuery({ variables: { search, asc: topicFilterSortAsc, pinned: topicFilterPin } });
+  console.log(topicsData);
+
   const router: AppRouterInstance = useRouter();
   const params: Params = useParams();
 
@@ -82,8 +85,12 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
     router.push("/admin/users");
   };
 
-  const handleSignOutClick = () => {
-    localStorage.removeItem(`${Constants.NEXT_PUBLIC_ACCESS_TOKEN_KEY}`); navigate.push("/login"); client.clearStore();
+  const { instance } = useMsal();
+
+  const handleSignOutClick = (instance: IPublicClientApplication) => {
+    instance.logoutRedirect().catch((e: any): void => {
+      console.error(e);
+    });
   };
 
   const getSortedTopics = () => {
@@ -177,7 +184,7 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
                 {viewer?.viewer?.user?.role === UserRole.Admin && (
                   <DropdownMenu.Item onClick={handleManageUsersClick} className="group text-[13px] leading-none text-[#039fb8] rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-[#039fb8] data-[highlighted]:text-violet1">Manage Users</DropdownMenu.Item>
                 )}
-                <DropdownMenu.Item onClick={handleSignOutClick} className="group text-[13px] leading-none text-[#039fb8] rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-[#039fb8] data-[highlighted]:text-violet1">Sign Out</DropdownMenu.Item>
+                <DropdownMenu.Item onClick={() => handleSignOutClick(instance)} className="group text-[13px] leading-none text-[#039fb8] rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-[#039fb8] data-[highlighted]:text-violet1">Sign Out</DropdownMenu.Item>
               </DropDown>
             </div>
             <NewConversationButton />

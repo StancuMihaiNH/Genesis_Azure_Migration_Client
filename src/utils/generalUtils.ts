@@ -10,6 +10,7 @@ export let currentAccount: IUser = {
 };
 
 export const setCurrentAccount = (account: AccountInfo): void => {
+    console.log(account);
     currentAccount.PrincipalName = account?.username;
     currentAccount.DisplayName = account?.name ?? ConstantValues.EMPTY_STRING;
 };

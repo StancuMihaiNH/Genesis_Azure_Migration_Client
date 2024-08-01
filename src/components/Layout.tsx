@@ -1,9 +1,8 @@
 "use client";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
 import AppProvider, { AppContext } from "@/context";
 import GraphQLProvider from "@/graphql/client";
 import { msalConfig } from "@/services/msalConfig";
-import { currentAccount } from "@/utils/generalUtils";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import classNames from "classnames";
@@ -12,7 +11,6 @@ import { Authentication } from "./Authentication/authentication";
 
 const RenderedApp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { sidebarIsOpen } = useContext(AppContext);
-  console.log(currentAccount);
 
   return (
     <div
@@ -32,7 +30,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [msalInstance, setMsalInstance] = useState<PublicClientApplication | null>(null);
 
   const setAccessToken = (token: string): void => {
-    console.log(token);
     setToken(token);
   };
 

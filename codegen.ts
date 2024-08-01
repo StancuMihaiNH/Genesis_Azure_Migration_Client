@@ -1,9 +1,8 @@
-import { Constants } from "@/utils/constants";
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: Constants.NEXT_PUBLIC_GRAPHQL_URL,
+  schema: "http://localhost:8080",
   documents: ["src/**/*.{gql,graphql}"],
   generates: {
     "./src/graphql/__generated__/schema.tsx": {

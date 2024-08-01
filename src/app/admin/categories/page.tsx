@@ -2,7 +2,7 @@
 import AddCategoryForm from "@/components/AddCategoryForm";
 import EditCategoryForm from "@/components/EditCategoryForm";
 import Modal from "@/components/Modal";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
 import TabNav from "@/components/TabNav";
 import {
   CategoriesDocument,

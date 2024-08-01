@@ -49,13 +49,11 @@ const ComposeInput = dynamic(() => import("@/components/ComposeInput"), {
   ssr: false,
 });
 
-const TagSection: React.FC<{
-  category: string;
-  tags: Tag[];
-  onClick: (tag: Tag) => void;
-}> = ({ category, tags, onClick }) => {
+const TagSection: React.FC<{ category: string; tags: Tag[]; onClick: (tag: Tag) => void; }> = ({ category, tags, onClick }) => {
   const [open, setOpen] = useState(false);
-  if (tags.length === 0) return null;
+  if (tags.length === 0)
+    return null;
+
   return (
     <div className={"flex flex-col"}>
       <h3
@@ -175,6 +173,7 @@ const Conversation: React.FC<{ className?: string; id: string; }> = ({ className
     for (const category of categoriesData?.categories || []) {
       mapCategoryById.set(category?.id ?? "", category as Category);
     }
+
     let categories = new Map<string, Tag[]>();
     for (const tag of tags) {
       let categoryId = tag?.categoryId || "General";
@@ -190,8 +189,8 @@ const Conversation: React.FC<{ className?: string; id: string; }> = ({ className
         categories.set(categoryId, []);
       }
 
-      const exist = topic?.tags?.find((t) => tag?.id === t?.id);
-      if (!exist && tag) {
+      const existingTag = topic?.tags?.find((t) => tag?.id === t?.id);
+      if (!existingTag && tag) {
         categories.get(categoryId)?.push(tag);
       }
     }
@@ -202,7 +201,9 @@ const Conversation: React.FC<{ className?: string; id: string; }> = ({ className
         tags={tags}
         category={mapCategoryById.get(category)?.title || category}
         onClick={(tag) => {
-          if (!topic) return;
+          if (!topic) {
+            return;
+          }
 
           const updateTags = topic.tags || [];
           updateTopic({
