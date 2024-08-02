@@ -16,7 +16,6 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
   return (
     <html lang="en">
       <body className={classNames(inter.className)}>
-
         <Layout>{children}</Layout>
       </body>
     </html>

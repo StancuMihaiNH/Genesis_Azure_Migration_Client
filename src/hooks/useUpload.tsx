@@ -1,12 +1,17 @@
 import { usePresignedUploadUrlMutation } from "@/graphql/__generated__/schema";
 
-const uploadToS3 = async (presignedUrl: string, file: File) => {
+const uploadToBlobStorage = async (presignedUrl: string, file: File) => {
   const response = await fetch(presignedUrl, {
     method: "PUT",
     body: file,
+    headers: {
+      'x-ms-blob-type': 'BlockBlob',
+      'Content-Type': file.type,
+    }
   });
   if (!response.ok) {
-    throw new Error("Failed to upload file");
+    const errorText = await response.text();
+    throw new Error(`Failed to upload file: ${response.status} ${response.statusText} - ${errorText}`);
   }
 };
 
@@ -25,7 +30,7 @@ const useUpload = () => {
     if (!url || !key) {
       throw new Error("Failed to get presigned URL");
     }
-    await uploadToS3(url, file);
+    await uploadToBlobStorage(url, file);
     return key;
   };
 

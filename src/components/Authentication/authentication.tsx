@@ -18,7 +18,7 @@ export const Authentication: React.FC<AuthenticationProps> = ({ setAccessToken, 
         const initializeAuth = async () => {
             if (accounts.length > 0 && !isInteractionInProgress) {
                 setCurrentAccount(accounts[0]);
-
+                console.log("Current account: ", accounts[0]);
                 const request: SilentRequest = {
                     ...loginRequest,
                     account: accounts[0]
@@ -27,6 +27,8 @@ export const Authentication: React.FC<AuthenticationProps> = ({ setAccessToken, 
                 try {
                     const response = await instance.acquireTokenSilent(request);
                     setAccessToken(response.accessToken);
+                    console.log("Silent token acquisition successful: ", response);
+
                 } catch (error) {
                     if (error instanceof InteractionRequiredAuthError) {
                         setIsInteractionInProgress(true);

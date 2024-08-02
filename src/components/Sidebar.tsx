@@ -21,12 +21,10 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
   const { toggleSidebar, sidebarIsOpen, topicFilterPin, setTopicFilterPin, topicFilterSortAsc, setTopicFilterSortAsc, search: searchContext, setSearch } = useContext(AppContext);
   const [input, setInput] = useState(searchContext || "");
   const [search] = useDebounce(input, 300);
-  const navigate = useRouter();
   const [deleteTopic] = useDeleteTopicMutation();
   const { pin, unpin } = usePinTopic();
   const { data: viewer, client } = useViewerQuery();
   const { data: topicsData, previousData, loading } = useTopicsQuery({ variables: { search, asc: topicFilterSortAsc, pinned: topicFilterPin } });
-  console.log(topicsData);
 
   const router: AppRouterInstance = useRouter();
   const params: Params = useParams();

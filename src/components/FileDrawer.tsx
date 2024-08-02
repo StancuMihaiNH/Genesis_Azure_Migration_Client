@@ -3,10 +3,7 @@ import { File as FileObj } from "@/graphql/__generated__/schema";
 import React from "react";
 import { RiCloseLine } from "react-icons/ri";
 
-const FileDrawer: React.FC<{
-  file: FileObj;
-  onClose: () => void;
-}> = ({ file, onClose }) => {
+const FileDrawer: React.FC<{ file: FileObj; onClose: () => void; }> = ({ file, onClose }) => {
   return (
     <div
       id={"left-drawer"}
