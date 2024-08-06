@@ -24,16 +24,19 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Install dependencies, build, and test
-        run: |
-          yarn install
-          yarn build 
+      - name: Install dependencies
+        run: yarn install
 
+      - name: Build
+        run: yarn build
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: |
+            .
+            !node_modules/**/*
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,6 +50,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
