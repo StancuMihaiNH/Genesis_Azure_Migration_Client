@@ -36,9 +36,10 @@ export const handleSend = async (messages: Message[], model: string, tags?: Tag[
     presence_penalty: 0,
     model,
     messages: payload,
-    tags: tags?.map((tag) => ({ id: tag.id })),
+    tags: tags?.map((tag) => ({ id: tag.id, displayName: tag.displayName })),
     snippet
   };
+
   return await fetch(`${Constants.NEXT_PUBLIC_MESSAGE_API_URL}`, {
     method: "POST",
     headers: {
@@ -153,7 +154,7 @@ export const handleSendAndStreamCallback = async (data: SendStreamPayload, callb
     presence_penalty: 0,
     model: data.model,
     messages: payload,
-    tags: data.tags?.map((tag) => ({ id: tag.id })),
+    tags: data.tags?.map((tag) => ({ id: tag.id, displayName: tag.displayName })),
     snippet: data.snippet,
   };
 

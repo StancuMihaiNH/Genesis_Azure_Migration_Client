@@ -28,19 +28,39 @@ const RenderedApp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string>("");
   const [msalInstance, setMsalInstance] = useState<PublicClientApplication | null>(null);
+  const [urlsInitialized, setUrlsInitialized] = useState<boolean>(false);
 
   const setAccessToken = (token: string): void => {
     setToken(token);
   };
 
+  useEffect((): void => {
+    initializeUrls();
+  }, []);
+
   useEffect(() => {
+    if (!urlsInitialized) {
+      return;
+    }
+
     const instance = new PublicClientApplication(msalConfig);
     instance.initialize().then(() => {
       setMsalInstance(instance);
     }).catch(error => {
       console.error('Failed to initialize MSAL instance:', error);
     });
-  }, []);
+  }, [urlsInitialized]);
+
+  const initializeUrls = async () => {
+    try {
+      process.env.APP_API_SERVICE_URL = 'http://localhost:8080/';
+      process.env.APP_LLM_SERVICE_URL = 'http://localhost:8000/';
+      process.env.APP_CLIENT_URL = 'http://localhost:3000/';
+      setUrlsInitialized(true);
+    } catch (error) {
+      console.error('Failed to initialize URLs from Key Vault:', error);
+    }
+  };
 
   return (
     <React.StrictMode>

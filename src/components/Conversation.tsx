@@ -443,7 +443,7 @@ const Conversation: React.FC<{ className?: string; id: string; }> = ({ className
       if (files && files.length > 0) {
         filesInput = await Promise.all(
           files.map(async (file) => {
-            const key = await upload(file);
+            const key = await upload(file, "usr_store");
             return {
               id: key,
               filename: file.name,

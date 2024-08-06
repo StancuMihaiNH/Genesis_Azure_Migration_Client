@@ -1,0 +1,12 @@
+# Ignore node_modules and other unwanted files/folders
+node_modules/
+build
+dist
+.env
+.git
+.gitignore
+Dockerfile
+.dockerignore
+README.md
+npm-debug.log
+.next/

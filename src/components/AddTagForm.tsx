@@ -17,15 +17,14 @@ type FormValues = {
   content: string;
   categoryId?: string;
 };
-const AddTagForm: React.FC<{
-  categories: Category[];
-  onAdded?: (tag: Tag) => void;
-}> = ({ onAdded, categories }) => {
+
+const AddTagForm: React.FC<{ categories: Category[]; onAdded?: (tag: Tag) => void }> = ({ onAdded, categories }) => {
   const { upload } = useUpload();
   const [createTag, { loading, error }] = useCreateTagMutation();
   const [files, setFiles] = useState<File[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -37,6 +36,7 @@ const AddTagForm: React.FC<{
       categoryId: "",
     },
   });
+
   const onSubmit = async (data: FormValues) => {
     const tagId = newID();
     try {
@@ -50,7 +50,8 @@ const AddTagForm: React.FC<{
         setUploading(true);
         input.attachments = await Promise.all(
           files.map(async (file) => {
-            const key = await upload(file, tagId);
+            const filePrefix: string = `tags/${data.displayName}`
+            const key = await upload(file, filePrefix);
             const fileInput: FileInput = {
               id: key,
               filename: file.name,

@@ -23,7 +23,7 @@ const useUpload = () => {
       variables: {
         filename: file.name,
         contentType: file.type,
-        prefix,
+        prefix
       },
     });
     const { url, key } = data?.presignedUploadUrl || {};
