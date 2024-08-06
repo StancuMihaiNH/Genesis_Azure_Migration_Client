@@ -1,10 +1,9 @@
-import { Constants } from "@/utils/constants";
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import React from "react";
 
 const httpLink = createHttpLink({
-  uri: Constants.NEXT_PUBLIC_GRAPHQL_URL,
+  uri: process.env.APP_API_SERVICE_URL
 });
 
 export const authLink = (token: string) =>

@@ -53,8 +53,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const initializeUrls = async () => {
     try {
-      process.env.APP_API_SERVICE_URL = 'http://localhost:8080/';
-      process.env.APP_LLM_SERVICE_URL = 'http://localhost:8000/';
+      process.env.APP_API_SERVICE_URL = 'http://20.67.71.155/';
+      process.env.APP_LLM_SERVICE_URL = 'http://20.13.45.40/';
       process.env.APP_CLIENT_URL = 'http://localhost:3000/';
       setUrlsInitialized(true);
     } catch (error) {

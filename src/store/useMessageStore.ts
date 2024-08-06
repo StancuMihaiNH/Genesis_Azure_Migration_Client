@@ -1,5 +1,4 @@
 import { Message, Tag } from "@/graphql/__generated__/schema";
-import { Constants } from "@/utils/constants";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -40,7 +39,7 @@ export const handleSend = async (messages: Message[], model: string, tags?: Tag[
     snippet
   };
 
-  return await fetch(`${Constants.NEXT_PUBLIC_MESSAGE_API_URL}`, {
+  return await fetch(`${process.env.APP_LLM_SERVICE_URL}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -96,7 +95,7 @@ export const handleGenerateAITitle = async (data: GenerateAITitlePayload, signal
     snippet: data.snippet,
   };
 
-  const res: Response = await fetch(`${Constants.NEXT_PUBLIC_MESSAGE_API_URL}`, {
+  const res: Response = await fetch(`${process.env.APP_LLM_SERVICE_URL}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -159,7 +158,7 @@ export const handleSendAndStreamCallback = async (data: SendStreamPayload, callb
   };
 
   try {
-    const res = await fetch(`${Constants.NEXT_PUBLIC_MESSAGE_API_URL}`, {
+    const res = await fetch(`${process.env.APP_LLM_SERVICE_URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
