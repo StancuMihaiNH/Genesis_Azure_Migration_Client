@@ -24,9 +24,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Generate GraphQL code
-        run: yarn codegen
-
       - name: Build the Next.js app
         run: yarn build
       
