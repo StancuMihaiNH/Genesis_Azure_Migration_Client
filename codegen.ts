@@ -1,8 +1,9 @@
+import { Constants } from "@/utils/constants";
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.APP_API_SERVICE_URL,
+  schema: Constants.NEXT_PUBLIC_GRAPHQL_URL,
   documents: ["src/**/*.{gql,graphql}"],
   generates: {
     "./src/graphql/__generated__/schema.tsx": {
