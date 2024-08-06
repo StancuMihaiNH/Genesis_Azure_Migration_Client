@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "next lint",
     "codegen": "graphql-codegen",
     "watch": "graphql-codegen -w"
@@ -26,7 +26,7 @@
     "date-fns": "^3.6.0",
     "lottie-react": "^2.0.0",
     "marked": "^12.0.2",
-    "next": "14.2.3",
+    "next": "^14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.4",
@@ -36,6 +36,7 @@
     "ulid": "^2.3.0",
     "use-debounce": "^10.0.1",
     "uuid": "^9.0.1",
+    "yarn": "^1.22.22",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
