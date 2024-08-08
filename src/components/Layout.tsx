@@ -1,15 +1,15 @@
 "use client";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/Sidebar/Sidebar";
 import AppProvider, { AppContext } from "@/context";
 import GraphQLProvider from "@/graphql/client";
 import { msalConfig } from "@/services/msalConfig";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import classNames from "classnames";
-import React, { useContext, useEffect, useState } from "react";
+import React, { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { Authentication } from "./Authentication/authentication";
 
-const RenderedApp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const RenderedApp = (props: PropsWithChildren): JSX.Element => {
   const { sidebarIsOpen } = useContext(AppContext);
 
   return (
@@ -20,12 +20,12 @@ const RenderedApp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       })}
     >
       <Sidebar />
-      {children}
+      {props.children}
     </div>
   );
 };
 
-const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Layout = (props: PropsWithChildren): JSX.Element => {
   const [token, setToken] = useState<string>("");
   const [msalInstance, setMsalInstance] = useState<PublicClientApplication | null>(null);
 
@@ -33,8 +33,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setToken(token);
   };
 
-  useEffect(() => {
-    const instance = new PublicClientApplication(msalConfig);
+  useEffect((): void => {
+    const instance: PublicClientApplication = new PublicClientApplication(msalConfig);
     instance.initialize().then(() => {
       setMsalInstance(instance);
     }).catch(error => {
@@ -49,7 +49,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Authentication setAccessToken={setAccessToken}>
             <GraphQLProvider token={token}>
               <AppProvider>
-                <RenderedApp>{children}</RenderedApp>
+                <RenderedApp>{props.children}</RenderedApp>
               </AppProvider>
             </GraphQLProvider>
           </Authentication>

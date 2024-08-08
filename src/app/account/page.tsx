@@ -1,6 +1,6 @@
 "use client";
-import ToggleSidebarButton from "@/components/ToggleSidebarButton";
-import UpdateUserProfile from "@/components/UpdateUserProfile";
+import ToggleSidebarButton from "@/components/ToggleSidebarButton/ToggleSidebarButton";
+import UpdateUserProfile from "@/components/UpdateUserProfile/UpdateUserProfile";
 import { useUpdateUserMutation, useViewerQuery } from "@/graphql/__generated__/schema";
 import useUpload from "@/hooks/useUpload";
 import { RefObject, useRef, useState } from "react";
@@ -15,7 +15,7 @@ const TITLE_CLASS = "text-2xl font-bold p-4";
 const CONTENT_CLASS = "p-4 flex flex-col gap-2";
 const PROFILE_UPDATE_CLASS = "mt-4 p-4 max-w-lg shadow";
 
-const Page = () => {
+const Page = (): JSX.Element => {
   const { data, refetch } = useViewerQuery();
   const [update] = useUpdateUserMutation();
   const avatarFileRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -24,8 +24,13 @@ const Page = () => {
   const [showUpdateUserProfile, setShowUpdateUserProfile] = useState<boolean>(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!data?.viewer?.user?.id) return;
-    if (!e.target.files || e.target.files.length === 0) return;
+    if (!data?.viewer?.user?.id) {
+      return;
+    }
+
+    if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
 
     const file: File = e.target.files[0];
     try {

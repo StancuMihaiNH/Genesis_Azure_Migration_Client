@@ -11,7 +11,7 @@ const UsePinTopic = () => {
     const topicFragment = client.readFragment<TopicFragmentFragment>({
       id: `Topic:${id}`,
       fragmentName: "TopicFragment",
-      fragment: TopicFragmentFragmentDoc,
+      fragment: TopicFragmentFragmentDoc
     });
 
     if (!topicFragment) {

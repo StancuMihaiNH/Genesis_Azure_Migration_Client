@@ -9,7 +9,7 @@ type Snippet = {
   endCharacter: number;
 };
 
-export const handleSend = async (messages: Message[], model: string, tags?: Tag[], snippet?: Snippet) => {
+export const handleSend = async (messages: Message[], model: string, tags?: Tag[], snippet?: Snippet): Promise<any> => {
   let payload: Payload[] = [];
   for (let i = 0; i < messages.length; i++) {
     const message = messages[i];
@@ -28,6 +28,7 @@ export const handleSend = async (messages: Message[], model: string, tags?: Tag[
       payload.push({ role: message.role ?? undefined, content: message.content });
     }
   }
+
   const body = {
     temperature: 1,
     max_tokens: 256,

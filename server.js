@@ -15,24 +15,3 @@ app.prepare().then(() => {
         console.log("> Ready on http://localhost:3000");
     });
 });
-
-// const { createServer } = require("http");
-
-// const port = process.env.PORT || 3000;
-
-// const handleRequest = (req, res) => {
-//     if (req.url === '/test') {
-//         res.writeHead(200, { 'Content-Type': 'text/plain' });
-//         res.end('Success: The server is working correctly!');
-//     } else {
-//         res.writeHead(404, { 'Content-Type': 'text/plain' });
-//         res.end('Not Found');
-//     }
-// };
-
-// createServer((req, res) => {
-//     handleRequest(req, res);
-// }).listen(port, (err) => {
-//     if (err) throw err;
-//     console.log(`> Ready on http://localhost:${port}`);
-// });

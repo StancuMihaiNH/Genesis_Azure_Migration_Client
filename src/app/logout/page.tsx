@@ -1,6 +1,5 @@
 "use client";
-
-const Page = () => {
+const Page = (): JSX.Element => {
   return (
     <div
       className={"flex flex-col items-center justify-center w-full h-screen"}

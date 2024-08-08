@@ -1,23 +1,16 @@
 "use client";
-import AddTagForm from "@/components/AddTagForm";
-import EditTagForm from "@/components/EditTagForm";
-import Modal from "@/components/Modal";
-import TabNav from "@/components/TabNav";
-import Tags from "@/components/Tags";
-import ToggleSidebarButton from "@/components/ToggleSidebarButton";
-import {
-  Category,
-  Tag,
-  TagsDocument,
-  useCategoriesQuery,
-  UserRole,
-  useTagsQuery,
-  useViewerQuery,
-} from "@/graphql/__generated__/schema";
+import AddTagForm from "@/components/AddTagForm/AddTagForm";
+import EditTagForm from "@/components/EditTagForm/EditTagForm";
+import Modal from "@/components/Modal/Modal";
+import TabNav from "@/components/TabNav/TabNav";
+import Tags from "@/components/Tags/Tags";
+import ToggleSidebarButton from "@/components/ToggleSidebarButton/ToggleSidebarButton";
+import { Category, Tag, TagsDocument, useCategoriesQuery, UserRole, useTagsQuery, useViewerQuery } from "@/graphql/__generated__/schema";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { RiAddLine, RiCloseLine } from "react-icons/ri";
-const Page = () => {
+
+const Page = (): JSX.Element => {
   const { data: viewer } = useViewerQuery();
   const { data, client } = useTagsQuery();
   const { data: categoriesData } = useCategoriesQuery();
@@ -26,64 +19,35 @@ const Page = () => {
   const [editTag, setEditTag] = useState<Tag | null>(null);
   const tags = data?.tags || [];
 
-  return (
-    <>
-      <div className={"flex flex-col flex-1 p-4 gap-2"}>
-        <div className={"bg-white"}>
-          <ToggleSidebarButton />
-          <TabNav
-            links={[
-              { title: "Tags", href: "/admin/tags" },
-              { title: "Categories", href: "/admin/categories" },
-            ]}
-          />
+  const handleShowAddTag = (): void => setShowAddTag(true);
+  const handleHideAddTag = (): void => setShowAddTag(false);
+  const handleSelectTag = (tag: Tag): void => {
+    if (viewer?.viewer?.user?.role === UserRole.Admin || viewer?.viewer?.user?.id === tag.userId) {
+      setEditTag(tag);
+    }
+  };
+  const handleHideEditTag = (): void => setEditTag(null);
+  const handleTagAdded = (tag: Tag): void => {
+    client.writeQuery({
+      query: TagsDocument,
+      data: {
+        tags: [...tags, tag]
+      }
+    });
+    setSelectedTags([...selectedTags, tag]);
+    setShowAddTag(false);
+  };
 
-          <div className={"p-4"}>
-            <div className={"flex gap-2 items-center"}>
-              <h1 className={"text-2xl font-bold"}>Tags</h1>
-              <button
-                onClick={() => setShowAddTag(true)}
-                className={"text-[#132e53] px-4 py-2 rounded flex items-center"}
-                type={"button"}
-              >
-                <RiAddLine />
-                Add Tag
-              </button>
-            </div>
-            <div className={"flex-col mt-4 mb-4 flex gap-4"}>
-              <Tags
-                viewer={viewer?.viewer?.user}
-                onSelectTag={(tag) => {
-                  if (
-                    viewer?.viewer?.user?.role === UserRole.Admin ||
-                    viewer?.viewer?.user?.id === tag.userId
-                  ) {
-                    setEditTag(tag);
-                  }
-                }}
-                isAdmin={viewer?.viewer?.user?.role === UserRole.Admin}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+  const renderModals = (): JSX.Element => (
+    <>
       <Modal
         title={"Add new Tag"}
         open={showAddTag}
-        onClose={() => setShowAddTag(false)}
+        onClose={handleHideAddTag}
       >
         <AddTagForm
           categories={categoriesData?.categories as Category[] || []}
-          onAdded={(tag) => {
-            client.writeQuery({
-              query: TagsDocument,
-              data: {
-                tags: [...tags, tag],
-              },
-            });
-            setSelectedTags([...selectedTags, tag]);
-            setShowAddTag(false);
-          }}
+          onAdded={handleTagAdded}
         />
       </Modal>
       {editTag &&
@@ -100,7 +64,7 @@ const Page = () => {
                   <h2 className={"text-[#132e53] text-lg font-bold"}>
                     {editTag.displayName}
                   </h2>
-                  <button onClick={() => setEditTag(null)}>
+                  <button onClick={handleHideEditTag}>
                     <RiCloseLine size={30} />
                   </button>
                 </div>
@@ -108,15 +72,52 @@ const Page = () => {
               <div className={"overflow-y-auto flex-1"}>
                 <EditTagForm
                   canChangeOwner={viewer?.viewer?.user?.role === UserRole.Admin}
-                  oneDone={() => setEditTag(null)}
+                  oneDone={handleHideEditTag}
                   tag={editTag}
                   categories={categoriesData?.categories as Category[] || []}
                 />
               </div>
             </div>
           </div>,
-          document.body,
+          document.body
         )}
+    </>
+  );
+
+  return (
+    <>
+      <div className={"flex flex-col flex-1 p-4 gap-2"}>
+        <div className={"bg-white"}>
+          <ToggleSidebarButton />
+          <TabNav
+            links={[
+              { title: "Tags", href: "/admin/tags" },
+              { title: "Categories", href: "/admin/categories" },
+            ]}
+          />
+          <div className={"p-4"}>
+            <div className={"flex gap-2 items-center"}>
+              <h1 className={"text-2xl font-bold"}>Tags</h1>
+              <button
+                onClick={handleShowAddTag}
+                className={"text-[#132e53] px-4 py-2 rounded flex items-center"}
+                type={"button"}
+              >
+                <RiAddLine />
+                Add Tag
+              </button>
+            </div>
+            <div className={"flex-col mt-4 mb-4 flex gap-4"}>
+              <Tags
+                viewer={viewer?.viewer?.user}
+                onSelectTag={handleSelectTag}
+                isAdmin={viewer?.viewer?.user?.role === UserRole.Admin}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {renderModals()}
     </>
   );
 };

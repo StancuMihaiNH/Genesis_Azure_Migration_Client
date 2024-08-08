@@ -1,4 +1,3 @@
-
 export interface IUser {
     Id: string;
     PrincipalName: string;

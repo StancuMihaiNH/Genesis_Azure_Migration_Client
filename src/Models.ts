@@ -15,7 +15,7 @@ export const models: Model[] = [
   {
     displayName: "NH Q&A",
     id: "nh-qa",
-  },
+  }
 ];
 
 export const getModelName = (id: string): string | undefined => {

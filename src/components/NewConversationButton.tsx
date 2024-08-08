@@ -1,25 +1,24 @@
-import {
-  TopicsDocument,
-  useCreateTopicMutation,
-} from "@/graphql/__generated__/schema";
-import { useApolloClient } from "@apollo/client";
+import { TopicsDocument, useCreateTopicMutation } from "@/graphql/__generated__/schema";
+import { ApolloClient, useApolloClient } from "@apollo/client";
 import classNames from "classnames";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 
-const NewConversationButton = () => {
+const NewConversationButton = (): JSX.Element => {
   const [create, { loading }] = useCreateTopicMutation();
-  const router = useRouter();
-  const client = useApolloClient();
-  const handleNewTopic = async () => {
+  const router: AppRouterInstance = useRouter();
+  const client: ApolloClient<object> = useApolloClient();
+
+  const handleNewTopic = async (): Promise<void> => {
     try {
       const { data } = await create({
         variables: {
           input: {
             name: "",
             description: "",
-            tagIds: [],
-          },
-        },
+            tagIds: []
+          }
+        }
       });
       client.refetchQueries({
         include: [TopicsDocument],
@@ -29,15 +28,14 @@ const NewConversationButton = () => {
       console.log(err);
     }
   };
+
   return (
-    <button
-      disabled={loading}
+    <button disabled={loading}
       className={classNames(
         "bg-[#039fb8] text-white rounded p-2 w-full cursor-pointer",
         { "animate-pulse": loading },
       )}
-      onClick={handleNewTopic}
-    >
+      onClick={handleNewTopic}>
       New Conversation
     </button>
   );
