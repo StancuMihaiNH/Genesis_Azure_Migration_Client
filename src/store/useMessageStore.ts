@@ -167,7 +167,7 @@ export const handleSendAndStreamCallback = async (data: SendStreamPayload, callb
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify(body),
-      signal,
+      signal
     });
 
     if (!res.ok) {
